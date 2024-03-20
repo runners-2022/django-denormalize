@@ -17,6 +17,6 @@ if DJANGO_VERSION[:2] not in SUPPORTED_DJANGO_VERSIONS:
 
 
 SpecificDjango = import_string(
-    'abnorm.adapters.django%sp%s.SpecificDjango' % DJANGO_VERSION[:2])
+    'denormal.adapters.django%sp%s.SpecificDjango' % DJANGO_VERSION[:2])
 
 this_django = SpecificDjango()

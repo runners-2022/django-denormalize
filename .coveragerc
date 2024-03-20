@@ -1,7 +1,7 @@
 [run]
-source = abnorm
+source = denormal
 
 [report]
 omit =
-    abnorm/contrib.py
-    abnorm_tests/
+    denormal/contrib.py
+    denormal_tests/

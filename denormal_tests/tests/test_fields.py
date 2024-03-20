@@ -5,8 +5,8 @@ from .models import (
     M2MTestObj, TestParentObj, IgnoredTestObj,
 )
 
-from abnorm.utils import reload_model_instance
-from abnorm.adapters import this_django
+from denormal.utils import reload_model_instance
+from denormal.adapters import this_django
 
 
 class FKRelationTestCase(TestCase):
@@ -94,10 +94,10 @@ class FKRelationTestCase(TestCase):
             self.test_obj.rto_first_item.test_obj.pk, self.test_obj.pk)
 
     def test_altering_rto_first_item_attr_updates_itself(self):
-        denormalized_item = self.test_obj.rto_first_item
-        denormalized_item.value = 666
-        self.assertEqual(denormalized_item.test_obj, self.test_obj)
-        denormalized_item.save()  # just like if we got it from original model
+        denormald_item = self.test_obj.rto_first_item
+        denormald_item.value = 666
+        self.assertEqual(denormald_item.test_obj, self.test_obj)
+        denormald_item.save()  # just like if we got it from original model
         self.test_obj = reload_model_instance(self.test_obj)
         self.assertEqual(self.test_obj.rto_first_item.value, 666)
 
@@ -213,7 +213,7 @@ class PostUpdateTestCase(TestCase):
         self.assertEqual(self.test_grand_parent.all_children,
                          [self.test_parent])
 
-        # Got abnormed data too
+        # Got denormaled data too
         self.assertEqual(
             (self.test_grand_parent.all_children[0]
              .all_test_objs[0].m2m_first_2_items),
@@ -260,7 +260,7 @@ class GRPostUpdateTestCase(TestCase):
         self.assertEqual(
             self.test_obj.grto_first_item.m2m_first_item.value, 0)
 
-        # trigger denormalized data update
+        # trigger denormald data update
         self.m2m.value = 999
         self.m2m.save()
 
@@ -606,7 +606,7 @@ class DropCascadeTestCase(TestCase):
         self.child = TestParentObj.objects.create(parent=self.parent)
 
     def test_doesnt_fail_on_broken_refs(self):
-        # see DenormalizedFieldMixin.update_value_by try/except block comments
+        # see denormaldFieldMixin.update_value_by try/except block comments
         self.parent.delete()
 
 

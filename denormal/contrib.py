@@ -1,17 +1,17 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
-from .fields import DenormalizedFieldMixin
+from .fields import denormaldFieldMixin
 
 
-class RelationValueSetField(DenormalizedFieldMixin, ArrayField):
+class RelationValueSetField(denormaldFieldMixin, ArrayField):
 
     def __init__(self, *args, **kwargs):
         self.field_name = kwargs.pop('field_name', None)
         kwargs.setdefault('base_field', models.IntegerField())
         super(RelationValueSetField, self).__init__(*args, **kwargs)
 
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         queryset = self.get_related_queryset(instance, relation)
         # can't tell django to avoid outer join, so have to explicitly handle
         # empty relations case: drop `field` for `foos__bars__field` and

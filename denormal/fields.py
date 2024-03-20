@@ -37,7 +37,7 @@ def init_model(model, data):
     return instance
 
 
-class DenormalizedFieldMixin(object):
+class denormaldFieldMixin(object):
     def __init__(self, relation_name=None, null=True, blank=True,
                  qs_filter=None, **kwargs):
         if not relation_name:
@@ -51,7 +51,7 @@ class DenormalizedFieldMixin(object):
             self.filter = qs_filter
         else:
             raise ValueError('qs_filter must be Q or dict')
-        super(DenormalizedFieldMixin, self).__init__(
+        super(denormaldFieldMixin, self).__init__(
             null=null, blank=blank, **kwargs)
 
     @cached_property
@@ -61,7 +61,7 @@ class DenormalizedFieldMixin(object):
     def deconstruct(self):
         # django 1.7+
         name, path, args, kwargs = super(
-            DenormalizedFieldMixin, self).deconstruct()
+            denormaldFieldMixin, self).deconstruct()
         attr_names = ('relation_name',)
         for attr_name in attr_names:
             attr = getattr(self, attr_name)
@@ -70,14 +70,14 @@ class DenormalizedFieldMixin(object):
         return name, path, args, kwargs
 
     def contribute_to_class(self, cls, name, *args, **kwargs):
-        super(DenormalizedFieldMixin, self).contribute_to_class(
+        super(denormaldFieldMixin, self).contribute_to_class(
             cls, name, *args, **kwargs)
         if not self.model._meta.abstract and not state.SKIP_SIGNALS:
             if ((get_model_name(self.model), self.name)
                     not in state.signals_connected):
                 state.delayed_setup_signals.append((cls, self))
 
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         raise NotImplementedError('')
 
     def get_related_queryset(self, instance=None, relation=None):
@@ -92,7 +92,7 @@ class DenormalizedFieldMixin(object):
             return
 
         def prepare_database_save(self, field):
-            if not isinstance(field, DenormalizedFieldMixin):
+            if not isinstance(field, denormaldFieldMixin):
                 return self._prepare_database_save(field)
             return field.get_prep_value(self)
 
@@ -112,7 +112,7 @@ class DenormalizedFieldMixin(object):
             return
 
         if get_model_name(cls) in getattr(
-                settings, 'ABNORM_IGNORE_MODELS', []):
+                settings, 'denormal_IGNORE_MODELS', []):
             return
 
         pre_save.connect(self.augmented_model_pre_save, cls)
@@ -133,7 +133,7 @@ class DenormalizedFieldMixin(object):
             m2m_changed.connect(self.m2m_changed, sender=descriptor.through)
         elif is_frod:
             # patch nullable FK and One2One fields
-            #: see AbnormForeignRelatedObjectsDescriptor comments
+            #: see denormalForeignRelatedObjectsDescriptor comments
             if descriptor_field.null:
                 this_django.add_foreign_related_object_descriptor_slave_field(
                     descriptor, self)
@@ -180,7 +180,7 @@ class DenormalizedFieldMixin(object):
     @skippable
     def augmented_model_pre_save(self, sender, instance, **kwargs):
         if instance.pk:
-            setattr(instance, self.name, self.get_denormalized_value(instance))
+            setattr(instance, self.name, self.get_denormald_value(instance))
 
     @skippable
     def related_model_pre_save(self, sender, instance, raw=False, using=None,
@@ -245,7 +245,7 @@ class DenormalizedFieldMixin(object):
         if not isinstance(augmented_instance, self.model):
             return
         value = self.get_prep_value(
-            self.get_denormalized_value(augmented_instance))
+            self.get_denormald_value(augmented_instance))
         augmented_model = augmented_instance._meta.model
         augmented_model.objects.filter(pk=augmented_instance.pk).update(
             **{self.name: value})
@@ -257,7 +257,7 @@ class DenormalizedFieldMixin(object):
         )
 
 
-class AggregateField(DenormalizedFieldMixin):
+class AggregateField(denormaldFieldMixin):
     # this class just overrides default value of constructor `default` kwarg
     def __init__(self, relation_name=None, internal_type=None, default=0,
                  **kwargs):
@@ -267,7 +267,7 @@ class AggregateField(DenormalizedFieldMixin):
 
 class CountField(AggregateField, models.IntegerField):
 
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         return self.get_related_queryset(instance, relation).count()
 
     @skippable
@@ -298,7 +298,7 @@ class AnnotateField(AggregateField):
     def deconstruct(self):
         # django 1.7+
         name, path, args, kwargs = super(
-            DenormalizedFieldMixin, self).deconstruct()
+            denormaldFieldMixin, self).deconstruct()
         attr_names = ('relation_name', 'field_name', 'internal_type')
         for attr_name in attr_names:
             attr = getattr(self, attr_name)
@@ -313,7 +313,7 @@ class AnnotateField(AggregateField):
 
 
 class GenericSumField(AnnotateField):
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         qs = self.get_related_queryset(instance, relation)
         result_key = '%s__sum' % self.field_name
         result = qs.aggregate(Sum(self.field_name))
@@ -332,7 +332,7 @@ class SumField(object):
 
 
 class GenericAvgField(AnnotateField):
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         qs = self.get_related_queryset(instance, relation)
         result_key = '%s__avg' % self.field_name
         result = qs.aggregate(Avg(self.field_name))
@@ -350,7 +350,7 @@ class AvgField(object):
         return field_class(*args, **kwargs)
 
 
-class RelationField(DenormalizedFieldMixin, models.TextField):
+class RelationField(denormaldFieldMixin, models.TextField):
 
     generate_reverse_relation = False
 
@@ -374,7 +374,7 @@ class RelationField(DenormalizedFieldMixin, models.TextField):
     def deconstruct(self):
         # django 1.7+
         name, path, args, kwargs = super(
-            DenormalizedFieldMixin, self).deconstruct()
+            denormaldFieldMixin, self).deconstruct()
         attr_names = ('fields', 'relation_name', 'limit', 'flat',)
         for attr_name in attr_names:
             attr = getattr(self, attr_name)
@@ -396,12 +396,12 @@ class RelationField(DenormalizedFieldMixin, models.TextField):
             remote_field = this_django.get_relationfield_rel_model(
                 self)._meta.get_field(field_name)
 
-            if isinstance(remote_field, DenormalizedFieldMixin):
+            if isinstance(remote_field, denormaldFieldMixin):
                 field_value = loads(remote_field.serialize_value(field_value))
 
         return field_value
 
-    def get_denormalized_value(self, instance=None, relation=None):
+    def get_denormald_value(self, instance=None, relation=None):
         qs = self.get_related_queryset(instance, relation)
         if self.limit == 1 and self.flat:
             return qs.first()

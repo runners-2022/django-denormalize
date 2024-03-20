@@ -6,7 +6,7 @@ from .models import (
     M2MTestObj,
     NonOrderedModel,
 )
-from abnorm.adapters import this_django
+from denormal.adapters import this_django
 
 
 class DjangoAdapterTestCase(TestCase):

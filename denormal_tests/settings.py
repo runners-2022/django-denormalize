@@ -22,18 +22,18 @@ MEDIA_URL = '/media/'
 
 SECRET_KEY = '0'
 
-ROOT_URLCONF = 'abnorm_tests.urls'
+ROOT_URLCONF = 'denormal_tests.urls'
 
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
-    'abnorm',
-    'abnorm_tests.tests',
+    'denormal',
+    'denormal_tests.tests',
 )
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 MIDDLEWARE_CLASSES = ()
 
-ABNORM_IGNORE_MODELS = [
+denormal_IGNORE_MODELS = [
     'tests.IgnoredTestObj',
 ]

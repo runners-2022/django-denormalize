@@ -6,7 +6,7 @@ from .models import (
     M2MTestObj, TestParentObj
 )
 
-from abnorm.utils import reload_model_instance
+from denormal.utils import reload_model_instance
 
 
 class UpdateFieldsCommandTestCase(TestCase):
@@ -35,10 +35,10 @@ class UpdateFieldsCommandTestCase(TestCase):
             obj = getattr(self, relation)
 
             # lets update data in our db with signal-free update statement
-            # to suppress normal abnorm behavior
+            # to suppress normal denormal behavior
             type(obj).objects.filter(pk=obj.pk).update(value=999)
 
-            # make sure denormalized field value was not updated
+            # make sure denormald field value was not updated
             self.test_obj = reload_model_instance(self.test_obj)
 
             denormed_obj = getattr(self.test_obj, relation + '_first_item')
@@ -46,7 +46,7 @@ class UpdateFieldsCommandTestCase(TestCase):
 
             # run update fields command
             call_command(
-                'update_abnorm_fields',
+                'update_denormal_fields',
                 'tests.TestObj.{}_first_item'.format(relation),
             )
 
@@ -57,12 +57,12 @@ class UpdateFieldsCommandTestCase(TestCase):
 
     def test_uses_post_update_signal(self):
         # lets update data in our db with signal-free update statement
-        # to suppress normal abnorm behavior
+        # to suppress normal denormal behavior
         type(self.m2m).objects.filter(pk=self.m2m.pk).update(value=999)
 
         # run update fields command
         call_command(
-            'update_abnorm_fields',
+            'update_denormal_fields',
             'tests.TestObj.m2m_first_item',
         )
 
@@ -72,18 +72,18 @@ class UpdateFieldsCommandTestCase(TestCase):
         self.assertEqual(denormed_obj.value, 999)
 
     def test_updates_only_listed_fields(self):
-        # abnorm is smart enough to update all instance's fields on save
+        # denormal is smart enough to update all instance's fields on save
         # unfortunately that creates heavy update queries
 
         # lets update data in our db with signal-free update statement
-        # to suppress normal abnorm behavior
+        # to suppress normal denormal behavior
         type(self.rto).objects.filter(pk=self.rto.pk).update(value=999)
         type(self.grto).objects.filter(pk=self.grto.pk).update(value=999)
         type(self.nrto).objects.filter(pk=self.grto.pk).update(value=999)
 
         # this DOES NOT update nrto field
         call_command(
-            'update_abnorm_fields',
+            'update_denormal_fields',
             'tests.TestObj.rto_first_item',
             'tests.TestObj.grto_first_item',
         )

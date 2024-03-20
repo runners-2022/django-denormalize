@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.decorators import method_decorator
 
-from abnorm.adapters import this_django
+from denormal.adapters import this_django
 
 try:
     from progress.bar import Bar
@@ -35,7 +35,7 @@ def with_progress_bar(queryset, message='', total=None):
 
 class Command(BaseCommand):
     help = '''
-    Updates specified abnorm fields (use `app_label.Model.field_name` notation)
+    Updates specified denormal fields (use `app_label.Model.field_name` notation)
     '''
 
     def add_arguments(self, parser):

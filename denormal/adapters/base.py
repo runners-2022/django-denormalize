@@ -11,7 +11,7 @@ def _patch_descriptor_backwards_relation(descriptor):
 
     def remove(self, *objs, **kwargs):
         result = _remove_orig(self, *objs, **kwargs)
-        for field in descriptor._abnorm_slave_fields:
+        for field in descriptor._denormal_slave_fields:
             field.update_value(self.instance)
         return result
     remove.alters_data = True
@@ -19,7 +19,7 @@ def _patch_descriptor_backwards_relation(descriptor):
 
     def clear(self):
         result = _clear_orig(self)
-        for field in descriptor._abnorm_slave_fields:
+        for field in descriptor._denormal_slave_fields:
             field.update_value(self.instance)
         return result
     clear.alters_data = True
@@ -30,8 +30,8 @@ def _patch_descriptor_backwards_relation(descriptor):
 
 
 def _patch_foreign_related_object_descriptor_once(descriptor):
-    if not hasattr(descriptor, '_abnorm_slave_fields'):
-        descriptor._abnorm_slave_fields = []
+    if not hasattr(descriptor, '_denormal_slave_fields'):
+        descriptor._denormal_slave_fields = []
         _patch_descriptor_backwards_relation(descriptor)
 
 
@@ -46,4 +46,4 @@ class EveryDjango(object):
     def add_foreign_related_object_descriptor_slave_field(
             self, descriptor, field):
         _patch_foreign_related_object_descriptor_once(descriptor)
-        descriptor._abnorm_slave_fields.append(field)
+        descriptor._denormal_slave_fields.append(field)

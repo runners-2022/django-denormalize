@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
 
-from abnorm import SumField, CountField, RelationField
+from denormal import SumField, CountField, RelationField
 
 
 class BaseModel(models.Model):
