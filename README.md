@@ -72,7 +72,7 @@ Provides the actual related items count. A typical case would be, say, a number 
 Has no extra params.
 
 Example:
-```
+```python
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
 
@@ -82,7 +82,7 @@ class Post(models.Model):
 
 There's one more, with qs filtration - that one will count only comments with is_deleted == False:
 
-```
+```python
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     is_deleted = models.BooleanField(default=False)
@@ -101,7 +101,7 @@ internal_type - internal field type, used to store and validate your data, e.g.,
 field_name - name of the foreign model field, that holds collected values
 Example:
 
-```
+```python
 class Transaction(models.Model):
     account = models.ForeignKey(
         'Account', related_name='transactions', on_delete=models.CASCADE)
@@ -133,7 +133,7 @@ limit - number of records to store
 flat - use to unwrap the result list with a single item in it, requires limit=1
 Example:
 
-```
+```python
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     is_deleted = models.BooleanField(default=False)
@@ -158,7 +158,7 @@ default=list - regular Django field default parameter, so it can be callable
 field_name - a name of a foreign model field to collect its values
 Example:
 
-```
+```python
 class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     author_name = models.CharField(max_length=100)

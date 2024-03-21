@@ -1,30 +1,30 @@
 import os
 from setuptools import find_packages, setup
 
+README = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.md')
 
-README = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.rst')
-
+with open(README, 'r', encoding='utf-8') as f:
+    long_description = f.read()
 
 DEPENDENCIES = [
     'django >=2.2, <4.1',
 ]
-
 
 DEPENDENCY_LINKS = [
     # Add externally hosted packages like so:
     # e.g. http://github.com/[USERNAME]/[REPO]/tarball/[BRANCH]#egg=[EGG_NAME]
 ]
 
-
 setup(
     name='django-denormal',
-    version='1.3.0',
+    version='1.3.3',
     description='Django automatic denormalization toolkit',
+    long_description=long_description,
+    long_description_content_type='text/markdown',  # Correctly specify the content type here
     author='trashnroll',
     author_email='trashnroll@gmail.com',
     install_requires=DEPENDENCIES,
     dependency_links=DEPENDENCY_LINKS,
-    setup_requires=[],
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
